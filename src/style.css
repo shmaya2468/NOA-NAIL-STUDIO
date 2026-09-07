@@ -666,30 +666,6 @@ svg { display: block; }
 .marquee--divider .marquee-track { animation-duration: 26s; }
 
 /* ==========================================================================
-   USP band
-   ========================================================================== */
-
-.usp-band { padding-block: clamp(3rem, 6vw, 4.5rem); }
-.usp-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.75rem 1.25rem;
-}
-@media (min-width: 980px) { .usp-grid { grid-template-columns: repeat(4, 1fr); gap: 2.5rem; } }
-
-.usp-item { display: flex; flex-direction: column; gap: 0.9rem; }
-.usp-icon {
-  width: 46px; height: 46px;
-  border-radius: 50%;
-  background: var(--gold-pale);
-  color: var(--gold-deep);
-  display: flex; align-items: center; justify-content: center;
-}
-.usp-icon svg { width: 22px; height: 22px; }
-.usp-item h3 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 500; }
-.usp-item p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
-
-/* ==========================================================================
    Services
    ========================================================================== */
 
@@ -1038,6 +1014,33 @@ svg { display: block; }
 @media (min-width: 980px) {
   .benefit-item { flex-direction: row; align-items: flex-start; text-align: start; gap: 1.4rem; }
   .benefit-num { flex-shrink: 0; min-width: 2.2rem; font-size: 1.3rem; padding-top: 0.15rem; }
+}
+
+/* Phone-only: the single-column stack (still used as-is on tablet) reads as
+   too much vertical scroll at this width, so these become a compact 2x2
+   card grid instead — number/title/description hierarchy and the existing
+   .reveal entrance animation are untouched, only the layout changes. */
+@media (max-width: 640px) {
+  .benefit-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem;
+    border-top: 0;
+    padding-top: 0.4rem;
+  }
+  .benefit-item {
+    border-bottom: 0;
+    padding: 1.2rem 0.7rem;
+    background: var(--surface);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-soft);
+  }
+  /* gold-light reads well on the dark/photo backgrounds it's used against
+     elsewhere; against this card's pale surface it needs the deeper gold
+     token instead to stay clearly legible. */
+  .benefit-num { font-size: 1.4rem; color: var(--gold-deep); }
+  .benefit-body b { font-size: 1rem; }
+  .benefit-body span { font-size: 0.78rem; }
 }
 
 /* ==========================================================================
