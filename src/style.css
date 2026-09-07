@@ -951,7 +951,13 @@ svg { display: block; }
    ========================================================================== */
 
 .about { padding-block: var(--section-pad); position: relative; }
+/* Positioned + z-index so the section content reliably paints above the
+   absolutely-positioned .about-sparkles layer below regardless of DOM
+   order (a positioned box with z-index:auto always stacks above a static
+   one otherwise, no matter which comes first in markup). */
 .about-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
   gap: 2.4rem;
@@ -964,6 +970,7 @@ svg { display: block; }
 }
 
 .about-media { position: relative; }
+.about-media figure { margin: 0; }
 .about-photo {
   border-radius: var(--r-lg);
   overflow: hidden;
@@ -975,16 +982,162 @@ svg { display: block; }
   .about-photo:hover img { transform: scale(1.055); }
 }
 
-.about-copy .eyebrow { margin-bottom: 1.3rem; }
-.about-copy p.lede { color: var(--ink-soft); font-size: 1.05rem; line-height: 1.85; margin: 1.5rem 0 2.4rem; max-width: 34rem; }
+/* Noa's portrait — a "window" frame (round arch top, soft square base) in
+   both its mobile and desktop placements, sharing one 4:5 crop so the two
+   instances read as the same photo treatment rather than two different
+   ones. Which instance is in the DOM-flow-visible position is toggled per
+   breakpoint below; the image bytes themselves are identical either way. */
+.about-noa-photo {
+  border-radius: 50% 50% var(--r-md) var(--r-md) / 22% 22% var(--r-md) var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  aspect-ratio: 4 / 5;
+}
+.about-noa-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.75s cubic-bezier(0.2, 0.7, 0.2, 1); }
+/* Same hover language as .about-photo: only the inner image scales, the
+   arch frame (which clips it via overflow:hidden above) never moves. */
+@media (hover: hover) {
+  .about-noa-photo:hover img { transform: scale(1.05); }
+}
 
-/* On mobile the copy stacks above/below the photo instead of sitting beside
-   it, so a centered block reads more intentional than a start-aligned one —
-   the .sr-line-mask/.sr-line alignment sync in scrollReveals.js keeps the
-   animated heading lines centered too, not just the static text. */
+.about-noa-photo--mobile { max-width: 22rem; margin: 0 auto 1.4rem; }
+.about-noa-photo--desktop { display: none; }
+
+@media (min-width: 980px) {
+  .about-noa-photo--mobile { display: none; }
+  /* The studio photo keeps its own markup/aspect-ratio untouched; stacking
+     Noa's portrait above it in the same flex column is what both moves the
+     studio photo down and fills the empty space the column used to have. */
+  .about-media {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .about-noa-photo--desktop {
+    display: block;
+    width: 62%;
+    align-self: center;
+  }
+}
+
+.about-copy .eyebrow { margin-bottom: 1.3rem; }
+
+.about-bio { color: var(--ink-soft); font-size: 1.02rem; line-height: 1.85; max-width: 36rem; margin-top: 1.3rem; }
+.about-bio + .about-bio { margin-top: 1rem; }
+/* Named schools called out inline — a color-only cue backed by the words
+   themselves (CND Education / Tammy Taylor Academy already read as proper
+   nouns), so it stays a quiet accent rather than a second competing CTA. */
+.about-bio strong { color: var(--gold-deep); font-weight: 600; white-space: nowrap; }
+
+.about-subhead {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  color: var(--ink);
+  margin: clamp(2rem, 4vw, 2.75rem) 0 0.6rem;
+}
+/* One-time gold sweep, added by scrollReveals.js after the subhead fades
+   in — the exact technique already used for .section-title em, reapplied
+   here so both headings in this section share the same luminous accent. */
+.about-subhead.sr-highlight {
+  background-image: linear-gradient(100deg, var(--ink) 35%, var(--gold-light) 47%, #fff 50%, var(--gold-light) 53%, var(--ink) 65%);
+  background-size: 260% 100%;
+  background-position: 200% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.about-copy p.lede { color: var(--ink-soft); font-size: 1.05rem; line-height: 1.85; margin: 0 0 2.4rem; max-width: 34rem; }
+
+/* The copy stacks above/below the photo on mobile. It now carries a full
+   personal bio plus a secondary heading, so a start-aligned (natural RTL)
+   block uses the available width and reads as an editorial column instead
+   of a centered block of text shrinking toward the middle — the
+   .sr-line-mask/.sr-line alignment sync in scrollReveals.js keeps the
+   animated heading lines synced to whichever alignment is active. */
 @media (max-width: 979px) {
-  .about-copy { text-align: center; }
-  .about-copy p.lede { margin-inline: auto; }
+  .about-copy { text-align: start; }
+  .about-bio, .about-copy p.lede { max-width: none; }
+  /* Directly under Noa's portrait, the brand eyebrow + headline read as a
+     single centered "meet the owner" moment; the bio/subhead/lede paragraphs
+     stay start-aligned above for readability. Sized down slightly from the
+     shared .section-title scale (used by every other section) so it feels
+     proportionate to the portrait above it instead of competing with it —
+     scoped to this one heading only, not the global heading size. A looser
+     line-height than the shared 1.05 keeps the two wrapped lines from
+     crowding each other at this narrower measure. */
+  .about-intro-head { text-align: center; }
+  .about-intro-head .section-title { font-size: clamp(2.05rem, 7.5vw, 2.6rem); line-height: 1.18; }
+}
+
+/* Ambient sparkle band — a purely decorative, JS-generated layer (see
+   initAboutSparkles in main.js) spanning the full section width, from its
+   top edge down through roughly the top 62% of the section. Sized in real
+   pixels via ResizeObserver (--about-sparkle-band custom property) rather
+   than a CSS percentage height, since a percentage height on a child never
+   resolves against an auto-height parent like this section. Absent
+   entirely with no JS, or under prefers-reduced-motion. */
+.about-sparkles {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  height: var(--about-sparkle-band, 0px);
+}
+.about-sparkle {
+  position: absolute;
+  top: 0;
+  left: var(--x, 50%);
+  width: calc(var(--size, 3px) * var(--sparkle-mult, 1));
+  height: calc(var(--size, 3px) * var(--sparkle-mult, 1));
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffdf8 0%, var(--gold-light) 38%, var(--gold) 68%, rgba(178, 138, 79, 0) 88%);
+  /* A soft halo beyond the dot's own tiny box — reads as a gentle shimmer
+     rather than a hard-edged circle, and fades with the element's own
+     animated opacity below since box-shadow inherits it like any paint. */
+  box-shadow: 0 0 calc(var(--size, 3px) * 2.9) rgba(178, 138, 79, 0.8);
+  opacity: 0;
+  animation: about-sparkle-fall var(--dur, 9s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  animation-play-state: paused;
+  will-change: transform, opacity;
+}
+/* Minority accent mixed into the gold rain — a cool silver/diamond tone,
+   same shape, size and fall behavior, just its own color/glow. */
+.about-sparkle--silver {
+  background: radial-gradient(circle, #ffffff 0%, #eef4f7 35%, #c7d3da 66%, rgba(199, 211, 218, 0) 88%);
+  box-shadow: 0 0 calc(var(--size, 3px) * 2.9) rgba(197, 213, 224, 0.85);
+}
+.about-sparkles.is-active .about-sparkle { animation-play-state: running; }
+
+/* The extra opacity stops between the settle-in (12%) and fade-out (78%)
+   are a twinkle: brightness pulses up and down a few times while the dot
+   falls, read together as glitter/shimmer rather than a flat glow. Only
+   opacity varies at those stops — transform is left unset there, so it
+   keeps interpolating in a straight line between 0%/100% and the fall
+   stays perfectly smooth regardless of the flicker on top of it. */
+@keyframes about-sparkle-fall {
+  0% { transform: translateY(0); opacity: 0; }
+  12% { opacity: calc(var(--peak, 0.4) * var(--sparkle-mult, 1)); }
+  20% { opacity: calc(var(--peak, 0.4) * var(--sparkle-mult, 1) * 0.45); }
+  27% { opacity: calc(var(--peak, 0.4) * var(--sparkle-mult, 1) * 1.2); }
+  40% { opacity: calc(var(--peak, 0.4) * var(--sparkle-mult, 1) * 0.5); }
+  49% { opacity: calc(var(--peak, 0.4) * var(--sparkle-mult, 1) * 1.25); }
+  63% { opacity: calc(var(--peak, 0.4) * var(--sparkle-mult, 1) * 0.5); }
+  71% { opacity: calc(var(--peak, 0.4) * var(--sparkle-mult, 1) * 1.1); }
+  78% { opacity: calc(var(--peak, 0.4) * var(--sparkle-mult, 1)); }
+  100% { transform: translateY(var(--about-sparkle-fall, 120px)); opacity: 0; }
+}
+
+@media (max-width: 979px) {
+  .about-sparkles { --sparkle-mult: 0.85; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-sparkles { display: none; }
 }
 
 .benefit-list {

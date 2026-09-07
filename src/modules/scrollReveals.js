@@ -18,12 +18,12 @@ export function initScrollReveals() {
   if (reduceMotion) return;
 
   const run = () => {
-    // The Hand/Pedicure Portfolio intros get their own sequenced timeline
-    // (see initCenteredIntro below) instead of the generic per-heading
-    // treatment, so their headings are excluded here to avoid animating
-    // them twice.
+    // The Hand/Pedicure Portfolio intros and the About intro get their own
+    // sequenced timelines (see initCenteredIntro / initAboutIntro below)
+    // instead of the generic per-heading treatment, so their headings are
+    // excluded here to avoid animating them twice.
     const headings = Array.from(document.querySelectorAll('.section-title:not(#heroTitle)')).filter(
-      (h) => !h.closest('[data-feet-intro]') && !h.closest('[data-hands-intro]')
+      (h) => !h.closest('[data-feet-intro]') && !h.closest('[data-hands-intro]') && !h.closest('.about-copy')
     );
 
     headings.forEach((heading) => {
@@ -60,6 +60,14 @@ export function initScrollReveals() {
 
     initCenteredIntro('[data-feet-intro]');
     initCenteredIntro('[data-hands-intro]');
+    // Isolated: a failure in this one section's SplitText/timeline setup
+    // must never be able to skip ScrollTrigger.refresh() below (which the
+    // Cover Flow galleries and every other reveal on the page depend on).
+    try {
+      initAboutIntro();
+    } catch (err) {
+      console.error('About intro animation failed to initialize:', err);
+    }
     ScrollTrigger.refresh();
   };
 
@@ -141,4 +149,63 @@ function initCenteredIntro(selector) {
   if (rule) tl.to(rule, { scaleX: 1, duration: 0.7, ease: 'power2.inOut' }, '-=0.35');
   if (lede) tl.to(lede, { opacity: 1, y: 0, duration: 0.8 }, '-=0.4');
   if (em) tl.to(em, { backgroundPosition: '-40% 0', duration: 1.2, ease: 'power2.inOut' }, '-=0.5');
+}
+
+/**
+ * Bespoke sequenced reveal for the About section's intro copy — eyebrow,
+ * headline (line-mask reveal + one gold sweep through "נועה"), the personal
+ * bio paragraphs, the "אצלנו בסטודיו" subhead (+ its own gold sweep), then
+ * the supporting paragraph. Every text element here shares one subtle
+ * blur-to-sharp settle (not just the bio) so the whole block emerges as one
+ * luminous moment rather than a plain fade. Durations/overlaps are kept
+ * short and tightly staggered (full sequence lands in ~2.5s, heading and
+ * body tweens each under a second) so the section reads as responsive
+ * rather than a wait — quicker than initCenteredIntro's own pacing on
+ * purpose, since that one guards a single "wow moment" per page view while
+ * this text needs to be legible fast. The Noa/studio photos and the 01–04
+ * benefit cards below keep their own separate IntersectionObserver `.reveal`
+ * fade (reveal.js) — untouched here.
+ */
+function initAboutIntro() {
+  const copy = document.querySelector('.about-copy');
+  const heading = copy?.querySelector('.section-title');
+  if (!copy || !heading) return;
+
+  const eyebrow = copy.querySelector('.eyebrow');
+  const bioParas = copy.querySelectorAll('.about-bio');
+  const subhead = copy.querySelector('.about-subhead');
+  const lede = copy.querySelector('p.lede');
+
+  const split = new SplitText(heading, { type: 'lines', mask: 'lines', linesClass: 'sr-line' });
+  syncSplitAlignment(heading, split);
+  const em = pickHighlightEm(heading);
+  if (em) em.classList.add('sr-highlight');
+
+  if (eyebrow) gsap.set(eyebrow, { opacity: 0, y: 10, filter: 'blur(6px)' });
+  gsap.set(split.lines, { yPercent: 105, opacity: 0, filter: 'blur(10px)' });
+  if (em) gsap.set(em, { backgroundPosition: '200% 0' });
+  if (bioParas.length) gsap.set(bioParas, { opacity: 0, y: 22, filter: 'blur(6px)' });
+  if (subhead) {
+    gsap.set(subhead, { opacity: 0, y: 14, filter: 'blur(6px)' });
+    subhead.classList.add('sr-highlight');
+    gsap.set(subhead, { backgroundPosition: '200% 0' });
+  }
+  if (lede) gsap.set(lede, { opacity: 0, y: 18, filter: 'blur(6px)' });
+
+  const tl = gsap.timeline({
+    defaults: { ease: 'power3.out' },
+    scrollTrigger: { trigger: copy, start: 'top 82%', once: true },
+  });
+
+  if (eyebrow) tl.to(eyebrow, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.4 });
+  tl.to(split.lines, { yPercent: 0, opacity: 1, filter: 'blur(0px)', duration: 0.6, stagger: 0.06 }, eyebrow ? '-=0.2' : 0);
+  if (em) tl.to(em, { backgroundPosition: '-40% 0', duration: 0.8, ease: 'power2.inOut' }, '-=0.35');
+  if (bioParas.length) {
+    tl.to(bioParas, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.55, stagger: 0.08 }, '-=0.3');
+  }
+  if (subhead) {
+    tl.to(subhead, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.5 }, '-=0.3');
+    tl.to(subhead, { backgroundPosition: '-40% 0', duration: 0.8, ease: 'power2.inOut' }, '-=0.35');
+  }
+  if (lede) tl.to(lede, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.55 }, '-=0.3');
 }

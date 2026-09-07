@@ -11,6 +11,7 @@ import { initTestimonials } from './modules/testimonials.js';
 import { initTilt } from './modules/tilt.js';
 import { initContactForm } from './modules/contactForm.js';
 import { initSmoothScroll } from './modules/smoothScroll.js';
+import { initAboutSparkles } from './modules/aboutSparkles.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,6 +33,7 @@ initTilt('.testi-card', { maxTilt: 5, liftY: -8, scale: 1.02 });
 initTilt('.shape-card', { maxTilt: 8, liftY: -6, scale: 1.04 });
 initContactForm();
 initSmoothScroll();
+initAboutSparkles();
 
 // Recalculate pinned/scrubbed ScrollTrigger positions once everything
 // (fonts, images) has actually finished loading, per GSAP best practice.
