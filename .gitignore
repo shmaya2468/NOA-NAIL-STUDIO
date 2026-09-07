@@ -1,0 +1,13 @@
+node_modules
+dist
+.DS_Store
+*.log
+
+# Raw/original uploads kept locally for reference — not used by the built
+# site (the optimized versions actually served live in src/assets/*).
+תמונות/
+אנימציה של לוטי/
+וידיאו לבאנר/
+
+# Personal/machine-local Claude Code settings, not shared project config.
+.claude/settings.local.json

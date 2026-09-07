@@ -1,0 +1,1473 @@
+/* ==========================================================================
+   NOA NAIL STUDIO — Design tokens & base
+   ========================================================================== */
+
+:root {
+  /* Color — sampled from the studio's real logo, interior and product photography */
+  --bg: #f8f2e8;
+  --bg-alt: #f1e6d6;
+  --surface: #fffdfa;
+  --ink: #241c16;
+  --ink-soft: #4a4038;
+  --muted: #8a7a6b;
+  --line: rgba(36, 28, 22, 0.13);
+  --line-soft: rgba(36, 28, 22, 0.07);
+
+  --gold: #b28a4f;
+  --gold-light: #ddc191;
+  --gold-pale: #f1e4c9;
+  --gold-deep: #8a6a3c;
+
+  --blush: #cf9683;
+  --blush-soft: #f0dcd1;
+  --blush-deep: #a86a56;
+
+  --espresso: #241c16;
+  --espresso-soft: #362a20;
+  --on-espresso: #f3ead9;
+  --on-espresso-muted: #b6a690;
+
+  --white: #fffefb;
+
+  /* Hero video fallback gradient (shown behind/before the video loads) */
+  --hero-grad-1: #efe2ce;
+  --hero-grad-2: #d9c19f;
+  --hero-grad-3: #a9835a;
+  --hero-grad-4: #efe0c4;
+  --hero-grad-5: #e9dbc0;
+  --hero-grad-6: #cbab7c;
+  --hero-grad-7: #8c6a3c;
+
+  /* Brand-locked / semantic colors */
+  --whatsapp-green: #25d366;
+  --status-success: #cfe8c9;
+  --status-error: #eec3bd;
+
+  /* Radii */
+  --r-sm: 10px;
+  --r-md: 20px;
+  --r-lg: 32px;
+  --r-pill: 999px;
+
+  /* Shadow */
+  --shadow-soft: 0 20px 55px rgba(36, 20, 10, 0.10);
+  --shadow-strong: 0 30px 80px rgba(36, 20, 10, 0.20);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 0.25s;
+  --dur-med: 0.5s;
+
+  /* Type */
+  --font-display: "Frank Ruhl Libre", "Times New Roman", serif;
+  --font-body: "Heebo", Arial, sans-serif;
+
+  /* Layout */
+  --container-gap: 1.25rem;
+  --container: min(1240px, 100% - (var(--container-gap) * 2));
+  --section-pad: clamp(4rem, 9vw, 8rem);
+  --nav-h: 74px;
+  --scroll-offset: calc(var(--nav-h) + 10px);
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html.no-scroll, body.no-scroll { overflow: hidden; }
+section[id], main[id] { scroll-margin-top: var(--scroll-offset); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+ul { margin: 0; padding: 0; list-style: none; }
+p { margin: 0; }
+h1, h2, h3, h4 { margin: 0; font-weight: 400; text-wrap: balance; }
+input, textarea { font: inherit; color: inherit; }
+svg { display: block; }
+
+:focus-visible {
+  outline: 2px solid var(--gold-deep);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.container { width: var(--container); margin-inline: auto; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: -60px;
+  right: 1rem;
+  z-index: 200;
+  background: var(--ink);
+  color: var(--on-espresso);
+  padding: 0.8rem 1.4rem;
+  border-radius: var(--r-sm);
+  transition: top var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus { top: 1rem; }
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+.eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+[dir="rtl"] .eyebrow::before { order: 2; }
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 5.4vw, 3.8rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+/* Non-italic on purpose: a synthesized oblique on Hebrew glyphs sitting
+   directly against an upright prefix letter (e.g. "ה" + "בחירה", where the
+   "ה" is a definite-article prefix glued on with no space, by correct
+   Hebrew grammar) reads as the two visually fusing/colliding. A tiny
+   guaranteed gap plus a warm, non-slanted treatment fixes that regardless
+   of which word precedes it. Base state (JS or not) is solid, fully legible
+   gold text; scrollReveals.js adds .sr-highlight to layer the one-time
+   gradient sweep on top once the heading scrolls into view. */
+.section-title em {
+  font-style: normal;
+  font-weight: 500;
+  color: var(--gold-deep);
+  margin-inline-start: 0.05em;
+}
+.section-title em.sr-highlight {
+  background-image: linear-gradient(100deg, var(--gold-deep) 35%, var(--gold-light) 47%, #fff 50%, var(--gold-light) 53%, var(--gold-deep) 65%);
+  background-size: 260% 100%;
+  background-position: 200% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.section-lede {
+  color: var(--muted);
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  line-height: 1.8;
+  max-width: 34rem;
+}
+
+/* Per-line mask wrapper generated by GSAP SplitText (scrollReveals.js) for
+   the heading line-reveal. SplitText applies the required overflow/position
+   styling itself — this just hints the browser ahead of the animated frames. */
+.sr-line { will-change: transform, filter, opacity; }
+
+.section-head {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-bottom: clamp(2.4rem, 5vw, 3.6rem);
+}
+@media (min-width: 900px) {
+  .section-head--split {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2.5rem;
+  }
+}
+
+/* Centered variant for a single grouped intro (currently: Pedicure Portfolio)
+   instead of the label/lede split layout above. */
+.section-head--centered {
+  align-items: center;
+  text-align: center;
+  max-width: 40rem;
+  margin-inline: auto;
+}
+.section-head--centered .section-lede { margin-inline: auto; }
+
+/* Thin decorative rule that "draws" itself in (scaleX 0 -> 1) once its
+   section intro scrolls into view — see scrollReveals.js initFeetIntro().
+   Fully drawn by default so it still reads correctly with no JS. */
+.section-title-rule {
+  display: block;
+  width: 64px;
+  height: 2px;
+  margin-block: 0.3rem 0.1rem;
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold-light));
+  transform: scaleX(1);
+  transform-origin: 50% 50%;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 1.7rem;
+  border-radius: var(--r-pill);
+  font-size: 0.92rem;
+  font-weight: 600;
+  border: 1px solid var(--ink);
+  overflow: hidden;
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  white-space: nowrap;
+}
+/* Soft diagonal sheen sweeping across on hover — layered on top of each
+   variant's own hover lift/glow below, never replacing it. */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.35) 50%, transparent 60%);
+  transform: translateX(-130%);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .btn:hover::before { transform: translateX(130%); transition: transform 0.75s var(--ease-out); }
+}
+.btn svg { position: relative; width: 18px; height: 18px; flex-shrink: 0; transition: transform 0.3s var(--ease-out); }
+@media (hover: hover) {
+  .btn:hover svg { transform: translateX(-3px); }
+}
+.btn:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) {
+  .btn::before { display: none; }
+}
+
+.btn--primary {
+  background: var(--ink);
+  color: var(--on-espresso);
+}
+.btn--primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-soft); background: var(--espresso-soft); }
+
+.btn--gold {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--white);
+}
+.btn--gold:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(178, 138, 79, 0.35); background: var(--gold-deep); border-color: var(--gold-deep); }
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--ink);
+}
+.btn--ghost:hover { background: var(--surface); border-color: var(--ink); }
+
+.btn--on-dark {
+  border-color: rgba(243, 234, 217, 0.5);
+  color: var(--on-espresso);
+}
+.btn--on-dark:hover { background: var(--on-espresso); color: var(--espresso); border-color: var(--on-espresso); }
+
+.btn--sm { padding: 0.7rem 1.2rem; font-size: 0.82rem; }
+.btn--lg { padding: 1.15rem 2.4rem; font-size: 1rem; }
+
+/* ==========================================================================
+   Reveal-on-scroll utility (progressive enhancement, IO-driven)
+   ========================================================================== */
+
+/* Hidden-until-revealed state only applies once JS has taken over (html.js) —
+   without JS (or before it boots) content stays fully visible and readable. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(5px);
+  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out), filter 0.9s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0s);
+  will-change: transform, opacity, filter;
+}
+.reveal.in-view { opacity: 1; transform: none; filter: blur(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  /* Same specificity as both rules above; wins on source order alone. */
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+
+.site-nav {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 100;
+  background: rgba(248, 242, 232, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.site-nav.is-scrolled {
+  background: rgba(248, 242, 232, 0.92);
+  border-color: var(--line-soft);
+  box-shadow: 0 12px 30px rgba(36, 20, 10, 0.06);
+}
+
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  height: var(--nav-h);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.brand img { height: 40px; width: auto; }
+.brand-word {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+}
+
+.nav-links {
+  display: none;
+  align-items: center;
+  gap: 2rem;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+.nav-links a { position: relative; padding-block: 0.3rem; }
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold-deep);
+  transition: width var(--dur-fast) var(--ease-out);
+}
+.nav-links a:hover::after,
+.nav-links a:focus-visible::after { width: 100%; }
+
+.nav-actions { display: flex; align-items: center; gap: 0.8rem; }
+
+.nav-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+}
+.nav-toggle svg { width: 20px; height: 20px; }
+.nav-toggle .icon-close { display: none; }
+.nav-toggle[aria-expanded="true"] .icon-open { display: none; }
+.nav-toggle[aria-expanded="true"] .icon-close { display: block; }
+
+@media (min-width: 980px) {
+  .nav-links { display: flex; }
+  .nav-toggle { display: none; }
+}
+
+/* Mobile nav overlay */
+.mobile-nav {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: var(--espresso);
+  color: var(--on-espresso);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6rem 2rem 3rem;
+  transform: translateY(-100%);
+  transition: transform 0.55s var(--ease-out);
+}
+.mobile-nav.is-open { transform: translateY(0); }
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.mobile-nav-links a {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 8vw, 2.4rem);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(243, 234, 217, 0.12);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+}
+.mobile-nav.is-open .mobile-nav-links a { opacity: 1; transform: none; }
+.mobile-nav-links a:nth-child(1) { transition-delay: 0.05s; }
+.mobile-nav-links a:nth-child(2) { transition-delay: 0.1s; }
+.mobile-nav-links a:nth-child(3) { transition-delay: 0.15s; }
+.mobile-nav-links a:nth-child(4) { transition-delay: 0.2s; }
+.mobile-nav-links a:nth-child(5) { transition-delay: 0.25s; }
+.mobile-nav-links a:nth-child(6) { transition-delay: 0.3s; }
+
+.mobile-nav-foot {
+  margin-top: 2.4rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.mobile-nav-foot a { color: var(--on-espresso-muted); font-size: 0.9rem; }
+
+@media (min-width: 980px) { .mobile-nav { display: none; } }
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: linear-gradient(160deg, var(--hero-grad-1), var(--hero-grad-2) 60%, var(--hero-grad-3));
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero-media video,
+.hero-media .hero-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Fallback gradient paints first and stays underneath the video at all
+   times — visible only for the instant before the video's first frame
+   paints, and as the sole background if autoplay is blocked or the file
+   fails to load, so the hero is never empty. */
+.hero-media .hero-fallback {
+  background: radial-gradient(120% 90% at 75% 20%, var(--hero-grad-4), transparent 60%), linear-gradient(165deg, var(--hero-grad-5) 0%, var(--hero-grad-6) 55%, var(--hero-grad-7) 100%);
+}
+.hero-video { background: transparent; }
+.hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Cinematic overlay: keeps hero copy legible over any frame of the video
+     without flattening it — darkest toward the bottom, where the title and
+     CTAs sit. */
+  background: linear-gradient(180deg, rgba(36, 22, 14, 0.18) 0%, rgba(24, 15, 10, 0.38) 55%, rgba(14, 9, 6, 0.82) 100%);
+}
+
+/* .hero-inner is combined with .container in markup — no width rule here,
+   so .container's max-width + gutter (not 100%) keeps determining it. */
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  padding: 7.5rem 0 3.2rem;
+  color: var(--on-espresso);
+}
+
+.hero-eyebrow {
+  color: var(--gold-light);
+  font-size: 0.72rem;
+}
+.hero-eyebrow::before { background: var(--gold-light); }
+
+/* The markup sets dir="ltr" here: "NAIL" and "STUDIO" are split into
+   separate spans for the per-word stagger reveal, and the RTL bidi
+   algorithm reorders sibling inline boxes (not just characters within one
+   text run) — without this override it visually renders "STUDIO NAIL".
+   text-align keeps it flush to the reading-start edge like the rest of the
+   RTL hero content. */
+.hero-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.06em;
+  font-family: var(--font-display);
+  font-weight: 400;
+  /* Lower floor than a naive mobile-first guess: "NAIL" + "STUDIO" are two
+     separate inline-flex word spans (see .hero-title-row) with no internal
+     break opportunity between them, so at the clamp's flat minimum — the
+     danger zone on the smallest supported phones — the pair must measure
+     narrower than the content column or it silently overflows past
+     body's overflow-x:hidden and gets clipped at the viewport edge. */
+  font-size: clamp(2.55rem, 11.5vw, 7.4rem);
+  line-height: 0.96;
+  letter-spacing: -0.01em;
+  margin: 1.3rem 0 2.4rem;
+  text-align: right;
+}
+/* flex-wrap is a safety net, not the primary fix: it lets "STUDIO" drop to
+   its own line rather than overflow if any combination of font, zoom or
+   viewport ever makes the pair too wide for the column at the sized above. */
+.hero-title-row { display: flex; flex-wrap: wrap; row-gap: 0.06em; column-gap: 0.32em; }
+.hero-title-mask { overflow: hidden; display: inline-block; }
+/* currentColor can't be used in this gradient — the same element also sets
+   color: transparent below, so currentColor would resolve to transparent
+   too. The base stops use the hero's actual text color instead. At rest
+   (background-position 200% 0) only the flat base-color portion of the
+   gradient is visible, so the title reads as ordinary solid text whenever
+   JS hasn't moved it — including with no JS at all. */
+.hero-title-word {
+  display: inline-block;
+  will-change: transform, filter, opacity;
+  background-image: linear-gradient(100deg, var(--on-espresso) 35%, var(--gold-light) 47%, #fff 50%, var(--gold-light) 53%, var(--on-espresso) 65%);
+  background-size: 260% 100%;
+  background-position: 200% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+/* Very small, slow breathing glow — added once the entrance + first shimmer
+   sweep finish (see hero.js). Amplitude is deliberately tiny: a cinematic
+   hint of light, not a neon effect. */
+.hero-title.is-glowing { animation: heroTitleGlow 6s ease-in-out infinite; }
+@keyframes heroTitleGlow {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(221, 193, 145, 0)); }
+  50% { filter: drop-shadow(0 0 16px rgba(221, 193, 145, 0.32)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-title.is-glowing { animation: none; }
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-bottom: 2.2rem;
+}
+
+/* Hero sub/actions/trust animate in via hero.js right after the title mask
+   reveal, so — like .reveal — they only start hidden once JS has booted. */
+.js .hero-line { opacity: 0; transform: translateY(16px); }
+
+.hero-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.6rem;
+  font-size: 0.8rem;
+  color: rgba(243, 234, 217, 0.78);
+}
+.hero-trust span { display: inline-flex; align-items: center; gap: 0.5rem; }
+.hero-trust i {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--gold-light);
+  display: inline-block;
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 1.6rem;
+  inset-inline-end: var(--container-gap, 1.25rem);
+  z-index: 2;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(243, 234, 217, 0.7);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+}
+.scroll-cue .stem {
+  width: 1px; height: 34px;
+  background: linear-gradient(to bottom, currentColor, transparent);
+  animation: cueMove 2.2s ease-in-out infinite;
+}
+@keyframes cueMove { 0%, 100% { transform: scaleY(1); opacity: .6 } 50% { transform: scaleY(.6); opacity: 1 } }
+@media (min-width: 700px) { .scroll-cue { display: flex; } }
+@media (prefers-reduced-motion: reduce) { .scroll-cue .stem { animation: none; } }
+
+/* ==========================================================================
+   Marquee ticker
+   ========================================================================== */
+
+.marquee {
+  border-block: 1px solid var(--line);
+  background: var(--bg-alt);
+  overflow: hidden;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeMove 32s linear infinite;
+}
+.marquee:hover .marquee-track { animation-play-state: paused; }
+.marquee-set {
+  display: flex;
+  align-items: center;
+  padding: 1.1rem 0;
+  flex-shrink: 0;
+}
+.marquee-set span {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.2vw, 1.4rem);
+  color: var(--ink-soft);
+  padding-inline: 1.6rem;
+  white-space: nowrap;
+}
+.marquee-set b { color: var(--gold-deep); font-weight: 400; padding-inline: 0.2rem; }
+@keyframes marqueeMove { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+[dir="rtl"] .marquee-track { animation-name: marqueeMoveRtl; }
+@keyframes marqueeMoveRtl { from { transform: translateX(0); } to { transform: translateX(50%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation-duration: 90s; }
+}
+
+/* Slimmer variant used as a section divider between About and the
+   portfolio galleries — same component, adapted rather than duplicated. */
+.marquee--divider .marquee-set { padding-block: 0.85rem; }
+.marquee--divider .marquee-set span { font-size: clamp(0.82rem, 1.6vw, 1.02rem); letter-spacing: 0.04em; }
+.marquee--divider .marquee-track { animation-duration: 26s; }
+
+/* ==========================================================================
+   USP band
+   ========================================================================== */
+
+.usp-band { padding-block: clamp(3rem, 6vw, 4.5rem); }
+.usp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.75rem 1.25rem;
+}
+@media (min-width: 980px) { .usp-grid { grid-template-columns: repeat(4, 1fr); gap: 2.5rem; } }
+
+.usp-item { display: flex; flex-direction: column; gap: 0.9rem; }
+.usp-icon {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--gold-pale);
+  color: var(--gold-deep);
+  display: flex; align-items: center; justify-content: center;
+}
+.usp-icon svg { width: 22px; height: 22px; }
+.usp-item h3 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 500; }
+.usp-item p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+
+/* ==========================================================================
+   Services
+   ========================================================================== */
+
+.services {
+  position: relative;
+  overflow: hidden;
+  background: var(--espresso);
+  color: var(--on-espresso);
+  padding-block: var(--section-pad);
+}
+.services > .container { position: relative; z-index: 1; }
+.services .eyebrow { color: var(--gold-light); }
+.services .section-title { color: var(--on-espresso); }
+.services .section-lede { color: var(--on-espresso-muted); }
+
+.service-list { border-top: 1px solid rgba(243, 234, 217, 0.14); }
+.service-row {
+  display: grid;
+  grid-template-columns: 2.4rem 1fr;
+  gap: 1rem 1.2rem;
+  padding: 1.6rem 0;
+  border-bottom: 1px solid rgba(243, 234, 217, 0.14);
+  transition: background var(--dur-fast) var(--ease-out), padding var(--dur-fast) var(--ease-out);
+}
+.service-row:hover { background: rgba(243, 234, 217, 0.04); padding-inline-start: 0.6rem; }
+.service-num { font-family: var(--font-display); color: var(--gold-light); font-size: 1rem; padding-top: 0.3rem; }
+.service-row h3 { font-family: var(--font-display); font-size: clamp(1.3rem, 3vw, 1.7rem); font-weight: 400; margin-bottom: 0.4rem; }
+.service-row p { color: var(--on-espresso-muted); font-size: 0.9rem; line-height: 1.7; max-width: 40rem; }
+.service-note {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  margin-top: 0.7rem; font-size: 0.78rem; color: var(--gold-light);
+}
+.service-note svg { width: 14px; height: 14px; }
+
+@media (min-width: 780px) {
+  .service-row { grid-template-columns: 3rem 1fr auto; align-items: center; }
+  .service-note { margin-top: 0; }
+}
+
+/* ==========================================================================
+   Portfolio galleries (hands / feet) — Cover Flow
+   ==========================================================================
+   A production-safe recreation of the classic Apple cover-flow concept:
+   a native, scroll-snapping horizontal list (real touch/trackpad/keyboard
+   scrolling — nothing hijacked) whose slides are rotated/scaled/stacked in
+   JS (see coverFlow.js) purely from each slide's measured distance to the
+   center. No experimental CSS functions or scroll-driven animation APIs
+   required, so it renders correctly in every supported browser today. */
+
+.gallery-section { padding-block: var(--section-pad); overflow: hidden; }
+.gallery-section--alt { background: var(--bg-alt); }
+.gallery-section .section-head { padding-inline: 0; }
+
+.cover-flow {
+  --cf-slide-w: clamp(230px, 64vw, 380px);
+  --cf-gap: clamp(0.9rem, 3vw, 1.5rem);
+  --cf-rotate: 24deg;
+  --cf-stack: 20px;
+  --cf-scale-step: 0.12;
+  --cf-min-scale: 0.84;
+
+  position: relative;
+  padding-block: clamp(1.5rem, 4vw, 3rem);
+}
+@media (min-width: 900px) {
+  .cover-flow {
+    --cf-slide-w: clamp(300px, 27vw, 420px);
+    --cf-rotate: 40deg;
+    --cf-stack: 48px;
+    --cf-scale-step: 0.17;
+    --cf-min-scale: 0.72;
+  }
+}
+
+.cover-flow__scroller {
+  display: flex;
+  gap: var(--cf-gap);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  scrollbar-width: none;
+  perspective: 1200px;
+  padding-inline: calc((100% - var(--cf-slide-w)) / 2);
+}
+.cover-flow__scroller::-webkit-scrollbar { display: none; }
+.cover-flow__scroller,
+.cover-flow__scroller * { user-select: none; -webkit-user-drag: none; }
+
+.cover-flow__slide {
+  position: relative;
+  flex: 0 0 var(--cf-slide-w);
+  aspect-ratio: 4 / 5;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  cursor: pointer;
+}
+.cover-flow__frame {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  background: var(--bg-alt);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+.cover-flow__slide img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: filter 0.4s var(--ease-out), transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.cover-flow__slide:not(.is-active) img { filter: saturate(0.92) brightness(0.94); }
+@media (hover: hover) {
+  .cover-flow__slide.is-active:hover img { transform: scale(1.06); }
+}
+
+.cover-flow__nav {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 10;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+  /* transform below is scale-only, never translateY: vertical centering
+     already comes from the static `translate` property above, which is
+     independent of `transform`. Re-adding translateY(-50%) inside a hover
+     `transform` used to stack on top of that and made the button visibly
+     jump upward on hover instead of staying anchored in place. */
+  transition: transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.cover-flow__nav svg { width: 20px; height: 20px; transition: transform 0.3s var(--ease-out); }
+.cover-flow__nav:hover { background: var(--ink); color: var(--on-espresso); border-color: var(--ink); box-shadow: var(--shadow-strong); transform: scale(1.07); }
+.cover-flow__nav--prev:hover svg { transform: translateX(-2px); }
+.cover-flow__nav--next:hover svg { transform: translateX(2px); }
+.cover-flow__nav:active { transform: scale(0.94); }
+.cover-flow__nav:disabled { opacity: 0.3; pointer-events: none; }
+.cover-flow__nav--prev { inset-inline-start: clamp(0.5rem, 3vw, 2.5rem); }
+.cover-flow__nav--next { inset-inline-end: clamp(0.5rem, 3vw, 2.5rem); }
+@media (min-width: 900px) { .cover-flow__nav { display: flex; } }
+
+.gallery-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.gallery-hint svg { width: 16px; height: 16px; }
+@media (min-width: 900px) { .gallery-hint { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cover-flow__scroller { scroll-behavior: auto; }
+  .cover-flow__frame { transition: none; }
+}
+
+/* ==========================================================================
+   Color & shape (canvas) section
+   ========================================================================== */
+
+/* Warm ivory band — separates this section visually from the plain page
+   background above/below it using a token already in the palette. */
+.style-section { padding-block: var(--section-pad); background: var(--bg-alt); }
+.style-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: center;
+}
+@media (min-width: 940px) { .style-grid { grid-template-columns: 1fr 1fr; } }
+
+/* Grid items default to min-width:auto, which is their content's min-content
+   size — and the nested auto-fill/minmax shape-grid below reports a much
+   wider min-content than the column ever has room for. Without this, that
+   inflates .style-grid's own track width past the viewport on mobile,
+   silently overflowing the page (a classic CSS Grid pitfall). min-width: 0
+   tells this column to respect the 1fr track instead and let its content
+   wrap/shrink to fit it. */
+.style-copy { min-width: 0; }
+@media (max-width: 939px) {
+  .style-copy { text-align: center; }
+  .style-copy .section-lede { margin-inline: auto; }
+  .style-copy .shape-grid { margin-inline: auto; }
+}
+
+.style-visual {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+.style-visual img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 32%; transition: transform 0.75s cubic-bezier(0.2, 0.7, 0.2, 1); }
+@media (hover: hover) {
+  .style-visual:hover img { transform: scale(1.06); }
+}
+.style-visual::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(0deg, rgba(36, 22, 14, 0.32), transparent 45%);
+}
+.style-visual figcaption {
+  position: absolute; bottom: 1.4rem; inset-inline-start: 1.4rem; inset-inline-end: 1.4rem;
+  z-index: 2;
+  color: var(--white);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+/* Nail-shape selector: small premium cards, each with its own silhouette
+   mark (pure CSS border-radius trickery — no icon artwork needed) and a
+   gentle lift/tilt on hover. Desktop hover is enhanced further by tilt.js
+   (subtle pointer-follow 3D rotation); mobile relies on the :active press
+   state below, never on hover. */
+.shape-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 0.7rem;
+  margin-top: 1.8rem;
+  max-width: 30rem;
+}
+.shape-card {
+  --tilt-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 1.1rem 0.6rem 0.9rem;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--line-soft);
+  box-shadow: var(--tilt-shadow);
+  transform-style: preserve-3d;
+  transition: box-shadow 0.35s var(--ease-out), border-color 0.35s var(--ease-out), background 0.35s var(--ease-out);
+}
+/* Only cards tilt.js isn't driving (no JS, or a coarse pointer that still
+   reports hover) get a CSS-transitioned transform — once tilt.js attaches
+   it owns the transform exclusively via GSAP, so the two never compete. */
+.shape-card:not(.has-tilt) { transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out), border-color 0.35s var(--ease-out), background 0.35s var(--ease-out); }
+.shape-card-mark {
+  width: 28px;
+  height: 38px;
+  background: linear-gradient(160deg, var(--gold-light), var(--gold));
+  transition: transform 0.35s var(--ease-out);
+}
+/* Each shape gets a distinct silhouette via corner radius alone. */
+.shape-card[data-shape="round"] .shape-card-mark { border-radius: 50%; height: 28px; }
+.shape-card[data-shape="oval"] .shape-card-mark { border-radius: 50%; }
+.shape-card[data-shape="almond"] .shape-card-mark { border-radius: 50% 50% 45% 45% / 65% 65% 35% 35%; height: 42px; }
+.shape-card[data-shape="square"] .shape-card-mark { border-radius: 4px; }
+.shape-card[data-shape="squoval"] .shape-card-mark { border-radius: 10px 10px 4px 4px; }
+.shape-card[data-shape="coffin"] .shape-card-mark { border-radius: 10px 10px 0 0; clip-path: polygon(14% 0, 86% 0, 100% 100%, 0 100%); height: 42px; }
+.shape-card[data-shape="stiletto"] .shape-card-mark { border-radius: 50% 50% 0 0 / 70% 70% 0 0; clip-path: polygon(50% 0, 100% 100%, 0 100%); height: 46px; }
+.shape-card-label { font-size: 0.8rem; color: var(--ink-soft); }
+
+@media (hover: hover) {
+  .shape-card:not(.has-tilt):hover {
+    transform: translateY(-6px) scale(1.03);
+    border-color: var(--gold-light);
+    background: var(--surface);
+    box-shadow: var(--shadow-strong);
+  }
+  .shape-card.has-tilt:hover { border-color: var(--gold-light); box-shadow: var(--shadow-strong); }
+  .shape-card:hover .shape-card-mark { transform: translateY(-2px) scale(1.08); }
+}
+.shape-card:active { transform: translateY(-2px) scale(0.97); }
+
+/* ==========================================================================
+   About / Studio
+   ========================================================================== */
+
+.about { padding-block: var(--section-pad); position: relative; }
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.4rem;
+  align-items: center;
+}
+@media (min-width: 980px) {
+  .about-grid { grid-template-columns: 1.05fr 0.95fr; gap: 4rem; }
+  .about-media { order: 2; }
+  .about-copy { order: 1; }
+}
+
+.about-media { position: relative; }
+.about-photo {
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  aspect-ratio: 4 / 3.1;
+}
+.about-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.75s cubic-bezier(0.2, 0.7, 0.2, 1); }
+@media (hover: hover) {
+  .about-photo:hover img { transform: scale(1.055); }
+}
+
+.about-copy .eyebrow { margin-bottom: 1.3rem; }
+.about-copy p.lede { color: var(--ink-soft); font-size: 1.05rem; line-height: 1.85; margin: 1.5rem 0 2.4rem; max-width: 34rem; }
+
+/* On mobile the copy stacks above/below the photo instead of sitting beside
+   it, so a centered block reads more intentional than a start-aligned one —
+   the .sr-line-mask/.sr-line alignment sync in scrollReveals.js keeps the
+   animated heading lines centered too, not just the static text. */
+@media (max-width: 979px) {
+  .about-copy { text-align: center; }
+  .about-copy p.lede { margin-inline: auto; }
+}
+
+.benefit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.6rem;
+}
+.benefit-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.benefit-item:last-child { border-bottom: 0; padding-bottom: 0; }
+.benefit-num { font-family: var(--font-display); font-size: 1.6rem; line-height: 1; color: var(--gold-light); }
+.benefit-body b { display: block; font-family: var(--font-display); font-weight: 500; font-size: 1.15rem; margin-bottom: 0.3rem; }
+.benefit-body span { color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+
+/* Desktop has room for a more editorial row (number beside text) instead of
+   the mobile's centered stacked card — matches the Services numbered-row
+   rhythm elsewhere on the page. */
+@media (min-width: 980px) {
+  .benefit-item { flex-direction: row; align-items: flex-start; text-align: start; gap: 1.4rem; }
+  .benefit-num { flex-shrink: 0; min-width: 2.2rem; font-size: 1.3rem; padding-top: 0.15rem; }
+}
+
+/* ==========================================================================
+   Testimonials
+   ========================================================================== */
+
+.testimonials { padding-block: var(--section-pad); background: var(--bg-alt); }
+.testi-scroller {
+  display: flex;
+  gap: 1.2rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-block: 0.4rem 1rem;
+  cursor: grab;
+  margin-inline: calc(var(--container-gap, 1.25rem) * -1);
+  padding-inline: var(--container-gap, 1.25rem);
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-light) transparent;
+}
+.testi-scroller.is-dragging { cursor: grabbing; scroll-snap-type: none; }
+.testi-card {
+  position: relative;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  width: min(340px, 82vw);
+  background: var(--surface);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-md);
+  padding: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  /* transform is intentionally excluded here — on devices where tilt.js
+     attaches, it drives rotateY/rotateX/y/scale directly via GSAP every
+     frame; a CSS transition on the same property would fight it and
+     stutter. Devices tilt.js skips (touch, reduced motion, no JS) simply
+     never receive a transform change on this card, so no fallback rule
+     is needed. */
+  transition: box-shadow 0.45s var(--ease-out), border-color 0.45s var(--ease-out);
+  will-change: transform;
+}
+.testi-quote-mark {
+  position: absolute;
+  top: -0.3rem;
+  inset-inline-end: 1.1rem;
+  font-family: var(--font-display);
+  font-size: 4.2rem;
+  line-height: 1;
+  color: var(--gold-pale);
+  transition: transform 0.45s var(--ease-out), color 0.45s var(--ease-out);
+  pointer-events: none;
+}
+.testi-top { display: flex; align-items: center; gap: 0.9rem; }
+.testi-avatar { width: 52px; height: 52px; border-radius: 50%; overflow: hidden; flex-shrink: 0; transition: transform 0.45s var(--ease-out); }
+.testi-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.testi-name { font-family: var(--font-display); font-size: 1.05rem; }
+.testi-stars { color: var(--gold); font-size: 0.75rem; letter-spacing: 0.1em; }
+.testi-quote { position: relative; color: var(--ink-soft); font-size: 0.95rem; line-height: 1.75; }
+
+/* Editorial "toward the viewer" depth on hover — tilt.js layers a subtle
+   pointer-follow rotation on top of this base lift for pointer/hover
+   devices; touch keeps the plain card with no hover dependency. */
+@media (hover: hover) {
+  .testi-card:hover {
+    box-shadow: var(--shadow-strong);
+    border-color: var(--gold-light);
+  }
+  .testi-card:hover .testi-quote-mark { color: var(--gold-light); transform: translateY(-4px) scale(1.08); }
+  .testi-card:hover .testi-avatar { transform: translateZ(18px) scale(1.04); }
+}
+
+@media (min-width: 900px) { .testi-scroller { overflow: visible; flex-wrap: wrap; margin-inline: 0; padding-inline: 0; cursor: default; } .testi-card { width: calc(33.333% - 0.8rem); } }
+
+/* ==========================================================================
+   FAQ
+   ========================================================================== */
+
+.faq { padding-block: var(--section-pad); }
+.faq-grid { display: grid; grid-template-columns: 1fr; gap: 2.4rem; }
+@media (min-width: 900px) { .faq-grid { grid-template-columns: 0.7fr 1.3fr; gap: 4rem; } }
+.faq-side p { color: var(--muted); line-height: 1.8; margin-top: 1rem; }
+
+.faq-list { display: flex; flex-direction: column; gap: 0.9rem; }
+
+.faq-item {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  overflow: hidden;
+  transition: border-color 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out), background 0.35s var(--ease-out);
+}
+@media (hover: hover) {
+  .faq-item:hover { border-color: var(--gold-light); box-shadow: var(--shadow-soft); }
+}
+.faq-item[open] { border-color: var(--gold); background: var(--gold-pale); box-shadow: var(--shadow-soft); }
+
+.faq-item > summary { list-style: none; }
+.faq-item > summary::-webkit-details-marker { display: none; }
+
+.faq-q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.9rem, 2.5vw, 1.6rem);
+  padding: clamp(1.1rem, 3vw, 1.6rem) clamp(1.1rem, 3vw, 1.8rem);
+  cursor: pointer;
+  min-height: 3.2rem; /* comfortable touch target on mobile */
+  transition: transform 0.3s var(--ease-out);
+}
+.faq-item:active .faq-q { transform: scale(0.995); }
+
+.faq-num {
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--gold-deep);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.3s var(--ease-out);
+}
+.faq-item[open] .faq-num { color: var(--gold-deep); }
+
+.faq-q-text {
+  flex: 1;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-family: var(--font-display);
+  transition: transform 0.3s var(--ease-out);
+}
+@media (hover: hover) {
+  .faq-item:not([open]):hover .faq-q-text { transform: translateX(-4px); }
+  [dir="rtl"] .faq-item:not([open]):hover .faq-q-text { transform: translateX(4px); }
+}
+
+.faq-icon {
+  flex-shrink: 0;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.4s var(--ease-out), background 0.35s var(--ease-out), border-color 0.35s var(--ease-out);
+}
+.faq-icon svg { width: 13px; height: 13px; color: var(--ink); }
+.faq-item[open] .faq-icon { transform: rotate(135deg); background: var(--ink); border-color: var(--ink); }
+.faq-item[open] .faq-icon svg { color: var(--on-espresso); }
+
+/* Native <details> shows/hides content with no JS needed. When JS is active
+   (html.js) it takes over height animation via inline styles set in faq.js. */
+.faq-a-wrap { overflow: hidden; }
+.faq-a { color: var(--ink-soft); line-height: 1.8; padding: 0 clamp(1.1rem, 3vw, 1.8rem) clamp(1.2rem, 3vw, 1.7rem) calc(clamp(1.1rem, 3vw, 1.8rem) + 2.4rem); font-size: 0.94rem; max-width: 40rem; }
+@media (max-width: 640px) {
+  .faq-a { padding-inline-start: clamp(1.1rem, 3vw, 1.8rem); }
+}
+
+/* ==========================================================================
+   Contact / booking + form
+   ========================================================================== */
+
+.contact { padding-block: var(--section-pad); }
+.contact-band {
+  background: var(--espresso);
+  color: var(--on-espresso);
+  border-radius: var(--r-lg);
+  padding: clamp(2.2rem, 6vw, 4.5rem);
+  position: relative;
+  overflow: hidden;
+}
+.contact-band::after {
+  content: "";
+  position: absolute;
+  width: 360px; height: 360px;
+  border: 1px solid rgba(243, 234, 217, 0.18);
+  border-radius: 50%;
+  inset-inline-start: -110px;
+  top: -140px;
+}
+.contact-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: 2.6rem; }
+@media (min-width: 980px) { .contact-grid { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+
+.contact-copy .eyebrow { color: var(--gold-light); }
+.contact-copy .section-title { color: var(--on-espresso); margin-bottom: 1.1rem; }
+.contact-copy p { color: var(--on-espresso-muted); line-height: 1.8; max-width: 30rem; }
+
+.contact-links { display: flex; align-items: center; gap: 1rem; margin-top: 1.8rem; }
+
+/* Icon-only contact buttons — the real tel:/wa.me/instagram links still
+   carry the actual number and handle, but nothing renders it as visible
+   text; aria-label on each link keeps it announced correctly. */
+.icon-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: rgba(243, 234, 217, 0.08);
+  border: 1px solid rgba(243, 234, 217, 0.16);
+  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.icon-btn img { width: 22px; height: 22px; object-fit: contain; }
+@media (hover: hover) {
+  .icon-btn:hover { background: var(--gold); border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 12px 28px rgba(178, 138, 79, 0.3); }
+}
+.icon-btn:active { transform: translateY(-1px) scale(0.96); }
+
+.contact-form {
+  background: rgba(243, 234, 217, 0.06);
+  border: 1px solid rgba(243, 234, 217, 0.14);
+  border-radius: var(--r-md);
+  padding: clamp(1.6rem, 3vw, 2.2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.form-field { display: flex; flex-direction: column; gap: 0.5rem; }
+.form-field label { font-size: 0.82rem; color: var(--on-espresso-muted); }
+.form-field input {
+  background: rgba(255, 253, 250, 0.05);
+  border: 1px solid rgba(243, 234, 217, 0.22);
+  border-radius: var(--r-sm);
+  padding: 0.85rem 1rem;
+  color: var(--on-espresso);
+  font-size: 0.98rem;
+  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.form-field input::placeholder { color: rgba(243, 234, 217, 0.35); }
+.form-field input:focus-visible { border-color: var(--gold-light); background: rgba(255, 253, 250, 0.09); outline: none; }
+.form-field.field-phone input { font-size: 1.1rem; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+.form-note { font-size: 0.76rem; color: var(--on-espresso-muted); }
+.form-status { font-size: 0.85rem; min-height: 1.2em; }
+.form-status[data-state="success"] { color: var(--status-success); }
+.form-status[data-state="error"] { color: var(--status-error); }
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.site-footer {
+  position: relative;
+  background: var(--ink);
+  color: var(--on-espresso);
+  padding-block: clamp(4rem, 9vw, 7rem) 2rem;
+  overflow: hidden;
+}
+/* A very soft radial glow behind the wordmark — an elegant transition from
+   the section above rather than a hard cut into a flat dark band. */
+.site-footer::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 50%;
+  top: -10%;
+  width: min(900px, 140vw);
+  aspect-ratio: 1;
+  translate: -50% 0;
+  background: radial-gradient(closest-side, rgba(221, 193, 145, 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.site-footer > .container { position: relative; z-index: 1; }
+.footer-cta { position: relative; text-align: center; margin-bottom: clamp(2.8rem, 7vw, 4.5rem); }
+.footer-kicker {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 0.8rem;
+}
+.footer-word {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 10vw, 6rem);
+  letter-spacing: 0.01em;
+  line-height: 1.02;
+  background-image: linear-gradient(180deg, var(--on-espresso), var(--gold-pale));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.footer-tagline { color: var(--on-espresso-muted); font-size: clamp(1rem, 2.4vw, 1.3rem); margin: 1rem 0 1.8rem; font-family: var(--font-display); font-style: italic; }
+
+.footer-divider {
+  position: relative;
+  height: 1px;
+  margin-bottom: clamp(2.2rem, 5vw, 3.2rem);
+  background: rgba(243, 234, 217, 0.12);
+  overflow: hidden;
+}
+.footer-divider::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+  animation: footerDividerSweep 7s ease-in-out infinite;
+}
+@keyframes footerDividerSweep {
+  0%, 100% { transform: translateX(-120%); }
+  50% { transform: translateX(220%); }
+}
+@media (prefers-reduced-motion: reduce) { .footer-divider::after { animation: none; display: none; } }
+
+.footer-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.4rem;
+}
+@media (min-width: 780px) { .footer-grid { grid-template-columns: repeat(3, 1fr); align-items: start; } }
+
+.footer-col h3 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--on-espresso-muted); margin-bottom: 1rem; font-family: var(--font-body); font-weight: 500; }
+.footer-col ul { display: flex; flex-direction: column; gap: 0.7rem; }
+.footer-col a { font-size: 0.92rem; color: var(--on-espresso); transition: color var(--dur-fast) var(--ease-out); }
+.footer-col a:hover { color: var(--gold-light); }
+.footer-social { display: flex; align-items: center; gap: 0.7rem; }
+.icon-btn--sm { width: 42px; height: 42px; }
+.icon-btn--sm img { width: 18px; height: 18px; }
+.footer-brand { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; }
+.footer-brand img { height: 34px; }
+.footer-about { color: var(--on-espresso-muted); font-size: 0.88rem; line-height: 1.8; max-width: 22rem; }
+
+.footer-bottom {
+  margin-top: 2.6rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid rgba(243, 234, 217, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  color: var(--on-espresso-muted);
+}
+
+/* Tighter vertical rhythm on mobile so the footer doesn't run unnecessarily
+   long under a stacked 3-column layout — spacing only, layout unchanged. */
+@media (max-width: 640px) {
+  .site-footer { padding-block: 2.6rem 1.4rem; }
+  .footer-cta { margin-bottom: 2rem; }
+  .footer-divider { margin-bottom: 1.8rem; }
+  .footer-grid { gap: 1.8rem; }
+  .footer-bottom { margin-top: 1.6rem; padding-top: 1.1rem; }
+}
+
+/* ==========================================================================
+   Ambient studio-photo background layer (Services + Footer) — a soft,
+   low-opacity atmospheric texture rather than a visible photo: the image
+   itself is faded and desaturated, then a radial scrim in the section's own
+   background color fades it out further toward the edges so only a warm
+   hint of the studio remains. Purely decorative, so it never intercepts
+   pointer input.
+   ========================================================================== */
+.section-ambient {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.section-ambient img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.16;
+  filter: grayscale(0.35) sepia(0.25) brightness(0.55) contrast(1.05);
+}
+.section-ambient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 50% 30%, transparent 0%, var(--espresso) 82%), linear-gradient(180deg, rgba(178, 138, 79, 0.14), transparent 45%);
+}
+.section-ambient--footer::after {
+  background: radial-gradient(120% 90% at 50% 20%, transparent 0%, var(--ink) 85%), linear-gradient(180deg, rgba(178, 138, 79, 0.1), transparent 50%);
+}
+
+/* ==========================================================================
+   WhatsApp float
+   ========================================================================== */
+
+/* Uses the studio's actual WhatsApp badge asset (pre-cropped close to its
+   content in build — see src/assets/img/whatsapp). object-fit: cover inside
+   this circular, overflow-hidden button crops away the asset's last sliver
+   of flat background so the round badge fills the button edge-to-edge with
+   no stray white corners, while never stretching or distorting it. */
+.wa-float {
+  position: fixed;
+  inset-inline-start: 1.2rem;
+  bottom: 1.2rem;
+  z-index: 90;
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 14px 34px rgba(20, 40, 20, 0.28);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.wa-float:hover { transform: translateY(-3px); }
+/* border-radius clips a replaced element's own rendered image directly, so
+   this crops the badge into a full circle without needing overflow:hidden
+   on the parent — which would otherwise also clip the pulse ring below. */
+.wa-float img {
+  /* The global `img { max-width: 100% }` reset caps only this axis, not
+     height — left alone it silently shrinks the width back to 100% while
+     height still reaches 118%, producing a non-square 58×68 box (and
+     therefore an oval, not a circle, once border-radius: 50% clips it).
+     max-width: none restores the intended symmetric oversize-crop. */
+  max-width: none;
+  width: 118%;
+  height: 118%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+}
+.wa-float::before {
+  content: "";
+  position: absolute; inset: -6px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--whatsapp-green) 50%, transparent);
+  animation: waPulse 2.6s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes waPulse { 0% { transform: scale(0.9); opacity: 0.7; } 100% { transform: scale(1.35); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .wa-float::before { animation: none; } }
+
+/* ==========================================================================
+   Misc section rhythm
+   ========================================================================== */
+
+.section-divider { height: clamp(2rem, 6vw, 4rem); }
+
+::selection { background: var(--gold-pale); color: var(--espresso); }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-alt); }
+::-webkit-scrollbar-thumb { background: var(--gold-light); border-radius: 10px; }
